@@ -162,7 +162,8 @@ Franka Emika can be controlled directly from a computer with ROS or by using its
 ### 4.3.3 Visualization
 For the robot’s movement visualization, a computer with Unity software was used, where Vuforia Engine, Mixed Reality Toolkit, as well as URDF Importer packages are already installed on it.
 
-```URDF Importer```
+***URDF Importer***
+
 First of all, it’s required to import Franka Emika’s model into the Unity game engine. Due to the usage of URDF importer, an Articulation Body is created for each of the child objects of a panda, which automatically establishes restrictions for joints. This allows the joints of a manipulator to avoid any collisions between each other.
 
 
