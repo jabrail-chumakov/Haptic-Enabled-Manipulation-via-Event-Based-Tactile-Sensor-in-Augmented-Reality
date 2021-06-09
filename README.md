@@ -109,5 +109,64 @@ Several different cameras (DAVIS420, iniVation) were used in this experiment for
 - Temporal: Average number of spikes in specific time zone
 - Spatio-temporal: Special Van Rossum algorithm were used for this coding
 
+### 3.3 Approach
+As it was mentioned previously, an elastic body with four reflective markers will be put on the lens of an event-based camera. Whiskers are connected to each marker, so the sensor can always interact with the surface through them. The whiskers were designed for more soft interaction with the surface. With them, the silicon part of the sensor will not get damaged due to contact with some rough surfaces.
+
+The additional adapter is placed between the lens and markers, so no outer light can enter the camera sensor. An adapter will be filled with a number of LEDs which will give light with constant frequency, so an event-based camera will always have a full vision of the sensors. All LEDs will be connected to the STM32 microcontroller parallel to each other in order to have the same frequency.
+
+The exploded view of the whole set-up can be seen in Figure 3.1. When the force will be applied on the sensor, distances between the markers must be consequently extended. The event-based camera will immediately catch the change in position. After several repetitions and estimation of correlation between the force and the distance, in further experiments force will be easily calculated.
+
+![8](https://user-images.githubusercontent.com/67557966/121360562-5a0b6a00-c956-11eb-8fec-d88abd5887c7.jpg)
+
+### 3.4 Results Evaluation
+For this project, we used Metavision Essentials SDK 2.1 software which was designed specifically for the Prophesee event-based cameras and sensors. So far we have settled the software, so it can identify markers and put them in the box as you can see in Figure 3.3. Also, this figure illustrates the sensor’s appearance from the inside. From the illustrations, it can be seen that with the applied force marker’s position significantly change. We extract center coordinates of the boxes and send them to Unity for visualisation and later they will be sent to industrial robot Franka Emica via Robot Operating System.
+
+Currently, the new design for the setup was implemented. Present setup has a fewer number of joints which leads to more stable contact. Also, instead of the silicon body just hanging on the lens, now it is connected to the core of the setup, so the bond is more solid and relies on the whole setup rather than just on the lens as it was in the prototype. Another updated feature is that we increased the number of LEDs from 3 to 6, so the vision of the event-based camera was improved. The optimal frequency of the LEDs was estimated to be around 1000 Hz, which is fast enough to receive all the required data. Without the light given with constant frequency event-based camera would not be able to see the markers when they are standing still and this might cause a further problem in the estimation of their location and force estimation.
+
+During the identification of the markers, boxes were flickering or changing the size due to the presence of some noise. Since it led to the displacement of the center coordinates, relative distances were also exposed to frequent change. We deduced the high frequencies by applying the low-pass filter as you can see in the Figure 3.4.
+
+![9](https://user-images.githubusercontent.com/67557966/121361089-c8502c80-c956-11eb-9a1f-60cd80134ed9.jpg)
+
+### 3.5 Conclusion
+For future work, we can adapt the new algorithm, which will estimate not only the normal force but also tangent forces across the plane which can be occurred due to the friction of the surface. The processing of such events will be made in MATLAB, where different codings from the NeuroTac paper will be examined in order to achieve the best result. Another great feature that can be implemented is texture recognition with the use of whiskers. Another way to improve the robustness of the sensor is to change the calculation of measuring the distances while correlating them with the applied force. There are also a lot of approaches to develop the elastic body. We can increase the number of markers, so by relying on a bigger number of coordinates, the work of the sensor can become more smooth. Further work might also include changing the thickness of the walls of the silicon body as well as changing its shape to half-sphere. 
+
+![10](https://user-images.githubusercontent.com/67557966/121361273-f5044400-c956-11eb-81e3-28692b51afba.jpg)
+![11](https://user-images.githubusercontent.com/67557966/121361277-f59cda80-c956-11eb-8fab-287a4b271927.jpg)
+
+## Chapter 4: Visualisation in Augmented Reality
+### 4.1 Introduction
+The fourth industrial revolution influenced the fact that more and more companies begin to introduce robotic systems into their production, thereby automating the process. It significantly affects production speed and has a positive effect on overall performance [7]. Furthermore, such a solution eliminates any possible risks related to the presence of a person in dangerous areas, where the robot can operate. In such cases, the operator could use various devices, such as augmented/mixed reality (AR/VR) head-mounted display or smart glasses, in order to remotely control the manipulator.
+
+The usage of augmented or mixed reality devices in production helps to significantly facilitate work in hard-to-reach places, thereunto has the ability to visualize the operator’s intended action before execution in order to observe possible risks and take appropriate measures to avoid them.
+
+During hiring, staff preparation can be greatly facilitated due to the application of AR/MR devices. After a few lessons, employees will be able to learn how to control the manipulator in real life. Moreover, during the action planning, it will be possible to examine the trajectory of movement and possible collisions on the way, as well as display the force vector when working with various objects.
+
+The main purpose of this chapter is to make a connection for controlling the manipulator by using the Unity, ROS and corresponding libraries, as well as visualizing direct contact with the object.
+
+### 4.2 Background
+In the work of Ostanin et al. (2020), authors followed an aim to come up with a convenient way to perform different tasks by using manipulators together with a Mixed Reality headset in an industry, where there are many dangerous and risky situations, as well as for robot arms’ operation in places, that are hard to reach [7]. Additionally, they wanted to propose a useful way to control the robot, namely ”Programming By Demonstration” (PbD), where the user does not need to have sufficient technical knowledge, which results in allowing less qualified employees to use the equipment. Finally, a combination of these technologies will open new gates of opportunities for HRI development.
+
+By connecting ROS to Unity together with HoloLens mixed reality headset, the authors were able to import URDF (Universal Robot Description File) models of manipulators and link a real and a virtual robot, while the user can start visualization of the upcoming process in order to observe the trajectory of movement and see the possible obstacles on its way, as well as to make scaling for more comfortable path settings. In order to avoid obstacles, algorithms based on Rapidly-exploring Random Tree (RRT) and A* were used. Furthermore, in order to determine the robot in space, the Jarvis, RANSAC, DBSCAN and ICP algorithms were used, which calculates the approximate location of the manipulator by looking for robot-like objects, and then defines its position. The algorithms’ average running time is 23.1 seconds. Besides that, there is an error in determining the position and orientation which are equal to 9 mm and 3.1 degrees, respectively. The error can be caused by the presence of several objects similar to the manipulator in the scene. In addition, due to scaling, it is possible to increase the accuracy of the path setting from 1-2 cm to 0.5 cm [7]. Due to the usage of HoloLens, the ”Pick and Place” process becomes simpler and the final result with possible risks can be observed immediately. Thus, it is very beneficial to use Mixed Reality devices, as it reduces the number of errors due to virtual simulation and speeds up the program writing.
+
+The main idea of integrating Mixed Reality in operating with manipulators was taken from the authors’ previous work [8], however, in new research work, they made several significant improvements, such as (i) finding and attaching robot in space (ii) avoiding obstacles (iii) scaling in order to improve accuracy in path planning. Therewith, all features were tested with two robots at once: both KUKA iiwa 14 and UR10e. Thus, in this paper, the authors concentrated on user-friendliness to significantly facilitate the working process [7]. Another work, written by Rosen et al. argues that usage of Mixed Reality devices could positively affect efficiency since in that way it can increase accuracy and decrease overall time to accomplish the intended actions due to an experiment conducted among 32 participants [9].
+
+### 4.3 Methodology
+### 4.3.1 Functionality
+In order to control the manipulator by haptic device and observe the physical contact with the object that the robot touches, it is necessary to send data from sensors to the main computer with installed Unity software from which the operations will be performed. For visualization and image transmission to HoloLens 1st generation headset and communication between ROS to Unity, the Unity Robotics Hub repository, Vuforia Engine, Mixed Reality Toolkit (MRTK) as well as Franka Emika robot’s URDF model were used. The way of how the whole scheme operates described in Figure 4.1.
+
+![12](https://user-images.githubusercontent.com/67557966/121361958-8bd10080-c957-11eb-8c71-6d66022e44e1.jpg)
+
+### 4.3.2 Manipulator control by haptic device
+Franka Emika can be controlled directly from a computer with ROS or by using its own interface called Desk, where it is possible to create different commands without coding. Nevertheless, this project proposes a new way to control the robot by using a haptic device described in the 1st chapter. To accomplish this task, it is necessary to receive data from the haptic device and transfer it to the force controller script of Franka Emika. It will allow controlling the robot, speed and movement’s direction of which will depend directly on the force applied by the user. Yet, the manipulator can move down or up along the z-axis, while the results are published in the terminal window on a computer with installed ROS. The reason why the robot only moves along one axis is that the applied force vector will only be displayed along the z-axis from the event-based camera data. All these processes are visualized in the HoloLens headset. In other words, all movements of the real robot are coincided with the virtual model and transmitted directly to the glasses in real-time.
+
+### 4.3.3 Visualization
+For the robot’s movement visualization, a computer with Unity software was used, where Vuforia Engine, Mixed Reality Toolkit, as well as URDF Importer packages are already installed on it.
+
+```URDF Importer```
+First of all, it’s required to import Franka Emika’s model into the Unity game engine. Due to the usage of URDF importer, an Articulation Body is created for each of the child objects of a panda, which automatically establishes restrictions for joints. This allows the joints of a manipulator to avoid any collisions between each other.
+
+
+
+
 
 
