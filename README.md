@@ -166,7 +166,36 @@ For the robot’s movement visualization, a computer with Unity software was use
 
 First of all, it’s required to import Franka Emika’s model into the Unity game engine. Due to the usage of URDF importer, an Articulation Body is created for each of the child objects of a panda, which automatically establishes restrictions for joints. This allows the joints of a manipulator to avoid any collisions between each other.
 
+***Vuforia Engine***
 
+Nevertheless, the difficulty appeared on how to define a robot in space, since it should be constantly fixed to one point and tracked during the application is running in the HoloLens device. For resolving this problem, it was decided to use Vuforia Engine due to its Image Target feature that allows displaying any model attached to it. The working principle of Image Target is that the user needs follow to Vuforia Engine Developer Portal and obtain a license key here, which should be later entered in Image Target’s game object tab. Following that, it essential to load the desired target on the website, with the presence of many distinctive signs, since it depends on how accurate the HoloLens headset will detect this target and display the robot. It is worth noting that during uploading, a user needs to specify the exact dimensions of the mark so that there will be no problems with finding the manipulator in space. The system on the website will automatically evaluate your image and give a rating, after which the user must download the database and upload it to Unity software. The model that is used in this project can be observed in Figure 4.2.
+
+![13](https://user-images.githubusercontent.com/67557966/121362777-2e897f00-c958-11eb-9cbc-7cdf432fe2da.jpg)
+
+***Scene set-up***
+
+In Unity, it is necessary to add to the scene and configure MRTK, as well as a camera by changing the background color to black, since the HoloLens device reads this color as transparent. Furthermore, it’s important to add to Image Target: Articular Body component and attach Franka Emika’s model as a child. Thus, during building an application into the HoloLens, the robot will be displayed right after it detects the familiar pattern. The user required to fix the Image Target near the robot so that it does not accidentally move since the position of the virtual robot must match that of the real one. An event-based camera model was created and added instead of a gripper. A new cylinder-shaped Game Object was attached to an event-based camera, which increases or decreases depending on the force applied to the sensor during visualization in the Hololens headset. The complete setup with the image target and attached sensor to a robot is shown in Figure 4.3.
+
+![14](https://user-images.githubusercontent.com/67557966/121362891-46f99980-c958-11eb-961e-bb3de3ed359a.jpg)
+
+### 4.4 Results Evaluation
+Franka Emika manipulator can be controlled by a haptic device in two directions, up and down, nevertheless, there are several notes on its operation. First of all, it is necessary to downscale the supplied force from the haptic device to the ROS, since due to large mass, the manipulator can move quickly enough and reach its limit resulting in the joints locking. Therefore, at this stage, it is necessary to divide the incoming force by 100 or 1000 in order to make the velocity of the manipulator less.
+
+Secondly, the manipulator end-effector moves perpendicularly to the surface along the z-axis. The fact is that by moving Franka Emika using a haptic device, an event-based camera’s sensor may come in contact with any object on its way. Therefore, in order to make the movements of the robot more accurate, it was decided to make movements only along one axis.
+
+Thirdly, by using the HoloLens device it’s possible to observe two manipulators, real and virtual one as shown in Figure 4.4, where a robot is viewed from the HoloLens device with (a) and without applied force (b).
+
+![15](https://user-images.githubusercontent.com/67557966/121363407-be2f2d80-c958-11eb-8d33-750a665efa2c.jpg)
+
+By controlling the real robot, its uploaded URDF model will repeat the same movements, while joints’ position will be displayed in Unity. Using the Image Target game object and attaching to it Franka Emika’s model as a child, it possible to observe the model of this manipulator right after the camera on the HoloLens device detects the target loaded into the project. Nevertheless, due to the fact that the display on the first generation of HoloLens is small, it is difficult to observe the manipulator’s model in full view. That is why, in the Image Target tab, Extended Tracked status should be chosen, which allows the robot to be displayed even if the HoloLens will lose the established target. All movements of the Franka Emika manipulator and the applied force on the sensor will also be displayed and changed in the headset due to this feature.
+
+### 4.5 Conclusion
+This part described the visualization of the Franka Emika manipulator due to usage of Vuforia Engine, Mixed Reality Toolkit and URDF Importer packages. Thanks to the last one it was possible to load the robot’s model into the Unity game engine using only the URDF file. Furthermore, it automatically created an Articulation Body component for each of the joints that prevents them from collisions. The manipulator can move along the z-axis up and down, and its velocity depends on the force applied by the user. In addition, the robot visualized model that can be observed in HoloLens is synchronized with the movements of the real manipulator and its joints’ position are published in Unity.
+
+In the future, it is planned to implement the function of controlling the joints of the Franka Emika manipulator using a Bluetooth keyboard or control arrows on the head-mounted display smart-glasses, in order to make the experience of controlling the robot even more remote. Finally, it is planned to implement new features, such as the finding of a robot in space without using Vuforia Engine’s Image Target feature by using a special algorithm which will automatically detects a robot-like object in space
+
+## Video Demonstration
+https://user-images.githubusercontent.com/67557966/121364357-88d70f80-c959-11eb-8ac0-c33ac763607f.mp4
 
 
 
